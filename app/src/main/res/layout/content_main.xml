@@ -26,4 +26,20 @@
         android:text="@string/stopservice"
         app:layout_constraintStart_toStartOf="@+id/buttonStart"
         app:layout_constraintTop_toBottomOf="@+id/buttonStart" />
+
+    <Button
+        android:id="@+id/buttonBind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bind"
+        app:layout_constraintStart_toStartOf="@+id/buttonStop"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStop" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unbide"
+        app:layout_constraintStart_toStartOf="@+id/buttonBind"
+        app:layout_constraintTop_toBottomOf="@+id/buttonBind" />
 </android.support.constraint.ConstraintLayout>

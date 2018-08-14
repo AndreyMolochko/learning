@@ -1,8 +1,10 @@
 package com.example.user.roomandroid;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +32,12 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final static String PARAM_TIME = "time";
+    public final static String PARAM_PINTENT = "pendingIntent";
+    public final static String PARAM_RESULT = "result";
+    final String LOG_TAG = "myLogs";
     private FloatingActionButton fab;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +68,24 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonStart)
     public void onClickButtonStart(){
-        startService(new Intent(this,MyService.class).putExtra("time",7));
-        startService(new Intent(this,MyService.class).putExtra("time",2));
-        startService(new Intent(this,MyService.class).putExtra("time",4));
+        PendingIntent pendingIntent;
+        Intent intent;
+        pendingIntent=createPendingResult(1,null,0);
+        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,7).putExtra(PARAM_PINTENT,pendingIntent);
+        startService(intent);
+        pendingIntent=createPendingResult(2,null,0);
+        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,4).putExtra(PARAM_PINTENT,pendingIntent);
+        startService(intent);
+        pendingIntent=createPendingResult(3,null,0);
+        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,6).putExtra(PARAM_PINTENT,pendingIntent);
+        startService(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i(LOG_TAG, "requestCode = " + requestCode + ", resultCode = "
+                + resultCode);
     }
 
     @OnClick(R.id.buttonStop)
