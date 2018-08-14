@@ -3,9 +3,11 @@ package com.example.user.roomandroid;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.arch.persistence.room.Room;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,14 +38,31 @@ public class MainActivity extends AppCompatActivity {
     public final static String PARAM_PINTENT = "pendingIntent";
     public final static String PARAM_RESULT = "result";
     final String LOG_TAG = "myLogs";
+    ServiceConnection serviceConnection;
+    Intent intent;
+    Boolean link;
     private FloatingActionButton fab;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         init();
+        intent = new Intent(this,MyService.class);
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                Log.i(LOG_TAG, "MainActivity onServiceConnected");
+                link=true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                Log.i(LOG_TAG, "MainActivity onServiceDisconnected");
+                link=false;
+            }
+        };
     }
 
     private void init(){
@@ -68,16 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonStart)
     public void onClickButtonStart(){
-        PendingIntent pendingIntent;
-        Intent intent;
-        pendingIntent=createPendingResult(1,null,0);
-        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,7).putExtra(PARAM_PINTENT,pendingIntent);
-        startService(intent);
-        pendingIntent=createPendingResult(2,null,0);
-        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,4).putExtra(PARAM_PINTENT,pendingIntent);
-        startService(intent);
-        pendingIntent=createPendingResult(3,null,0);
-        intent = new Intent(this,MyService.class).putExtra(PARAM_TIME,6).putExtra(PARAM_PINTENT,pendingIntent);
         startService(intent);
     }
 
@@ -90,7 +99,24 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonStop)
     public void onClickButtonStop(){
-        stopService(new Intent(this, MyService.class));
+        stopService(intent);
+    }
+
+    @OnClick(R.id.buttonBind)
+    public void onClickBind(){
+        bindService(intent,serviceConnection,BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @OnClick(R.id.buttonUnbind)
+    public void onClickUnBind(){
+        if(!link)return;
+        unbindService(serviceConnection);
+        link=false;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.user.roomandroid.workWithServices;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -41,10 +42,22 @@ public class MyService extends Service {
     }
 
     @Override
+    public void onRebind(Intent intent) {
+        Log.i(log,"on rebind my service");
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.i(log,"on unbind my service");
+        return super.onUnbind(intent);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         Log.i(log,"on Bind my service");
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new Binder();
     }
 
     private void executeTask(){
