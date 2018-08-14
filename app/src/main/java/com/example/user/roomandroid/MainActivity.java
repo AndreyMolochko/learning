@@ -2,6 +2,7 @@ package com.example.user.roomandroid;
 
 import android.app.Activity;
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,34 +15,29 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.user.roomandroid.room.AppDatabase;
 import com.example.user.roomandroid.room.Person;
+import com.example.user.roomandroid.workWithServices.MyService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppDatabase db;
     private FloatingActionButton fab;
-    private EditText editTextName;
-    private EditText editTextSalary;
-    private EditText editTextColor;
-    private ListView listView;
-    private ArrayAdapter<String> adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"populus-databaсe").
-                allowMainThreadQueries().
-                build();
+        ButterKnife.bind(this);
         init();
-        updateAdapter(this);
     }
 
     private void init(){
@@ -52,42 +48,28 @@ public class MainActivity extends AppCompatActivity {
     private void initView(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        editTextColor = findViewById(R.id.editTextColor);
-        editTextSalary = findViewById(R.id.editTextSalary);
-        editTextName = findViewById(R.id.editTextName);
-        listView = (ListView) findViewById(R.id.listView);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-    }
-
-    private void updateAdapter(View view){
-        adapter = new ArrayAdapter<String>(
-                view.getContext(),
-                android.R.layout.simple_list_item_1,
-                db.getPersonDao().getAllNames());
-        listView.setAdapter(adapter);
-    }
-
-    private void updateAdapter(Activity activity){
-        adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                db.getPersonDao().getAllNames());
-        listView.setAdapter(adapter);
     }
 
     private void initOnClickFloatingButton(){
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("ROOM_LEARN3", String.valueOf(db.getPersonDao().getAllPeople().size()));
-                int salary = Integer.parseInt(editTextSalary.getText().toString());
-                String name = editTextName.getText().toString();
-                String color = editTextColor.getText().toString();
-                db.getPersonDao().insertAll(new Person(name,salary,color));
-                Log.i("ROOM_LEARN4", String.valueOf(db.getPersonDao().getAllPeople().size()));
-                updateAdapter(view);
+
             }
         });
+    }
+
+    @OnClick(R.id.buttonStart)
+    public void onClickButtonStart(){
+        startService(new Intent(this,MyService.class).putExtra("time",7));
+        startService(new Intent(this,MyService.class).putExtra("time",2));
+        startService(new Intent(this,MyService.class).putExtra("time",4));
+    }
+
+    @OnClick(R.id.buttonStop)
+    public void onClickButtonStop(){
+        stopService(new Intent(this, MyService.class));
     }
 
     @Override

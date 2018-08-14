@@ -5,4 +5,6 @@
     <string name="name">Name :</string>
     <string name="salary">Salary :</string>
     <string name="color">Color :</string>
+    <string name="start_service">Start Service</string>
+    <string name="stopservice">stopService</string>
 </resources>
