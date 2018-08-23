@@ -15,33 +15,66 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.example.user.roomandroid.room.AppDatabase;
-import com.example.user.roomandroid.room.Person;
-import com.example.user.roomandroid.workWithServices.MyService;
+import com.example.user.roomandroid.room.bd.Bio;
+import com.example.user.roomandroid.room.bd.Company;
+import com.example.user.roomandroid.room.bd.Location;
+import com.example.user.roomandroid.room.bd.Person;
+import com.example.user.roomandroid.room.bd.Work;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String PARAM_TIME = "time";
-    public final static String PARAM_PINTENT = "pendingIntent";
-    public final static String PARAM_RESULT = "result";
     final String LOG_TAG = "myLogs";
-    ServiceConnection serviceConnection;
-    Intent intent;
-    Boolean link;
+    @BindView(R.id.editTextFirstSkill)
+    EditText editTextFirstSkill;
+    @BindView(R.id.editTextSecondSkill)
+    EditText editTextSecondSkill;
+    @BindView(R.id.editTextPosition)
+    EditText editTextPosition;
+    @BindView(R.id.editTextExperience)
+    EditText editTextExperience;
+    @BindView(R.id.editTextTechno)
+    EditText editTextTechno;
+    @BindView(R.id.editTextAge)
+    EditText editTextAge;
+    @BindView(R.id.editTextSex)
+    EditText editTextSex;
+    @BindView(R.id.editTextName)
+    EditText editTextName;
+    @BindView(R.id.editTextSurname)
+    EditText editTextSurname;
+    @BindView(R.id.editTextCity)
+    EditText editTextCity;
+    @BindView(R.id.editTextCountry)
+    EditText editTextCountry;
+    @BindView(R.id.editTextStreet)
+    EditText editTextStreet;
+    AppDatabase db;
     private FloatingActionButton fab;
+    private String firstSkill;
+    private String secondSkill;
+    private String position;
+    private String experience;
+    private String technology;
+    private String age;
+    private String sex;
+    private String name;
+    private String surname;
+    private String city;
+    private String street;
+    private String country;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +82,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         init();
-        intent = new Intent(this,MyService.class);
-        serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                Log.i(LOG_TAG, "MainActivity onServiceConnected");
-                link=true;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                Log.i(LOG_TAG, "MainActivity onServiceDisconnected");
-                link=false;
-            }
-        };
+        db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"testing")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
+        Log.i(LOG_TAG,"succesful initial db");
+        List<Person>men = db.getPersonDao().getPersonsById(4);
+        for(int i=0;i<men.size();i++){
+            Log.i(LOG_TAG,men.get(i).getBio().getName());
+        }
     }
 
     private void init(){
@@ -80,43 +108,50 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Person person = new Person();
+                Work work = new Work();
+                Company company = new Company();
+                Bio bio = new Bio();
+                Location location = new Location();
+                List<String> skills = new ArrayList<>();
+                firstSkill = editTextFirstSkill.getText().toString();
+                secondSkill = editTextSecondSkill.getText().toString();
+                position = editTextPosition.getText().toString();
+                experience = editTextExperience.getText().toString();
+                technology = editTextTechno.getText().toString();
+                age = editTextAge.getText().toString();
+                sex = editTextSex.getText().toString();
+                name = editTextName.getText().toString();
+                surname = editTextSurname.getText().toString();
+                city = editTextCity.getText().toString();
+                street = editTextStreet.getText().toString();
+                country = editTextCountry.getText().toString();
+                skills.add(firstSkill);
+                skills.add(secondSkill);
+                company.setPosition(position);
+                company.setPosition(experience);
+                company.setPosition(technology);
+                work.setCompany(company);
+                work.setSkills(skills);
+                location.setCity(city);
+                location.setStreet(street);
+                location.setCountry(country);
+                bio.setDateOfBirthday(Integer.parseInt(age));
+                bio.setName(name);
+                bio.setSex(sex);
+                bio.setSurname(surname);
+                person.setWork(work);
+                person.setBio(bio);
+                person.setLocation(location);
+                Log.i(LOG_TAG,"before insert, size = "+db.getPersonDao().getAllPerson().size());
+                db.getPersonDao().insertPersons(person);
+                Log.i(LOG_TAG,"after insert, size = "+db.getPersonDao().getAllPerson().size());
+                List<Person>men = db.getPersonDao().getAllPerson();
+                for(int i=0;i<men.size();i++){
+                    Log.i(LOG_TAG,men.get(i).getWork().getSkills().get(0));
+                }
             }
         });
-    }
-
-    @OnClick(R.id.buttonStart)
-    public void onClickButtonStart(){
-        startService(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.i(LOG_TAG, "requestCode = " + requestCode + ", resultCode = "
-                + resultCode);
-    }
-
-    @OnClick(R.id.buttonStop)
-    public void onClickButtonStop(){
-        stopService(intent);
-    }
-
-    @OnClick(R.id.buttonBind)
-    public void onClickBind(){
-        bindService(intent,serviceConnection,BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @OnClick(R.id.buttonUnbind)
-    public void onClickUnBind(){
-        if(!link)return;
-        unbindService(serviceConnection);
-        link=false;
     }
 
     @Override
