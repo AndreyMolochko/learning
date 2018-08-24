@@ -24,6 +24,7 @@ import com.example.user.roomandroid.room.bd.Company;
 import com.example.user.roomandroid.room.bd.Location;
 import com.example.user.roomandroid.room.bd.Person;
 import com.example.user.roomandroid.room.bd.Work;
+import com.example.user.roomandroid.service.foreground.MyForegroundService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
     final String LOG_TAG = "myLogs";
-    @BindView(R.id.editTextFirstSkill)
+    /*@BindView(R.id.editTextFirstSkill)
     EditText editTextFirstSkill;
     @BindView(R.id.editTextSecondSkill)
     EditText editTextSecondSkill;
@@ -59,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.editTextCountry)
     EditText editTextCountry;
     @BindView(R.id.editTextStreet)
-    EditText editTextStreet;
-    AppDatabase db;
+    EditText editTextStreet;*/
+    //AppDatabase db;
     private FloatingActionButton fab;
-    private String firstSkill;
+    /*private String firstSkill;
     private String secondSkill;
     private String position;
     private String experience;
@@ -73,24 +74,16 @@ public class MainActivity extends AppCompatActivity {
     private String surname;
     private String city;
     private String street;
-    private String country;
+    private String country;*/
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_create_foreground_service);
         ButterKnife.bind(this);
-        init();
-        db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"testing")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
-        Log.i(LOG_TAG,"succesful initial db");
-        List<Person>men = db.getPersonDao().getPersonsById(4);
-        for(int i=0;i<men.size();i++){
-            Log.i(LOG_TAG,men.get(i).getBio().getName());
-        }
+        setTitle("dev2qa.com - Android Foreground Service Example.");
+        Log.i(LOG_TAG,"after init");
     }
 
     private void init(){
@@ -108,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Person person = new Person();
+                /*Person person = new Person();
                 Work work = new Work();
                 Company company = new Company();
                 Bio bio = new Bio();
@@ -149,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 List<Person>men = db.getPersonDao().getAllPerson();
                 for(int i=0;i<men.size();i++){
                     Log.i(LOG_TAG,men.get(i).getWork().getSkills().get(0));
-                }
+                }*/
             }
         });
     }
@@ -173,5 +166,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.start_foreground_service_button)
+    public void clickOnStart(){
+        Log.i(LOG_TAG,"clickonStart");
+        Intent intent = new Intent(MainActivity.this, MyForegroundService.class);
+        intent.setAction(MyForegroundService.ACTION_START_FOREGROUND_SERVICE);
+        startService(intent);
+    }
+
+    @OnClick(R.id.stop_foreground_service_button)
+    public void clickOnStop(){
+        Intent intent = new Intent(MainActivity.this,MyForegroundService.class);
+        intent.setAction(MyForegroundService.ACTION_STOP_FOREGROUND_SERVICE);
+        startService(intent);
     }
 }
