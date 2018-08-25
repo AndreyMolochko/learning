@@ -4,22 +4,30 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
-
         <Button
-            android:id="@+id/start_foreground_service_button"
-            android:layout_width="match_parent"
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Foreground Service"/>
-
+            android:onClick="onClickStart"
+            android:text="start">
+        </Button>
         <Button
-            android:id="@+id/stop_foreground_service_button"
-            android:layout_width="match_parent"
+            android:id="@+id/btnStop"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stop Foreground Service"/>
-
+            android:onClick="onClickStop"
+            android:text="stop">
+        </Button>
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="">
+        </TextView>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
