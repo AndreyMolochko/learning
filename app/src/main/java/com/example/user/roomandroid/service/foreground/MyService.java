@@ -62,8 +62,6 @@ public class MyService extends Service {
         super.onCreate();
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
     }
 
     @SuppressLint("MissingPermission")
@@ -98,7 +96,7 @@ public class MyService extends Service {
 
         // 3-я часть
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.FILE_NAME, "somefile");
+        //intent.putExtra(MainActivity.FILE_NAME, "somefile");
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // 2-я часть
