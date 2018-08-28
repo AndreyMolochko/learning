@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.testing_imaging);
         ButterKnife.bind(this);
+        imageLoader.init(ImageLoaderConfiguration.createDefault(MainActivity.this));
         VKSdk.login(this,scope);
         dataVK = new ArrayList<>();
         recyclerView = findViewById(R.id.recycleView);
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
         RVAdapter adapter = new RVAdapter(persons);
         recyclerView.setAdapter(adapter);
         viewImages = new HashMap<>();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(MainActivity.this));
+
         String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
         Log.i("dadadada", String.valueOf(Arrays.asList(fingerprints)));*/
 
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
                             String name = list.get(i).first_name;
                             String secondName = list.get(i).last_name;
                             String url = list.get(i).photo_100;
-                            persons.add(new Person(name,secondName,null));
+                            persons.add(new Person(name,secondName,url));
                         }
                         Log.i("dadada", "almost finish");
                         RVAdapter rvAdapter = new RVAdapter(persons);

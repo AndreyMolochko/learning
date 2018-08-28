@@ -49,7 +49,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     public void onBindViewHolder(RVAdapter.PersonViewHolder holder, int position) {
         holder.personName.setText(persons.get(position).getName());
         holder.secondName.setText(persons.get(position).getSecondName());
-        //holder.imageView
+        MainActivity.imageLoader.displayImage(persons.get(position).getPhotoUrl(),holder.imageView);
     }
 
     @Override
@@ -58,9 +58,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     }
 
     public class PersonViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageView;
         TextView personName;
         TextView secondName;
-        ImageView imageView;
 
         public PersonViewHolder(View itemView) {
             super(itemView);
