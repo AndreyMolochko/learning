@@ -15,4 +15,5 @@
     <string name="city">city</string>
     <string name="work">Work</string>
     <string name="change_view">change view</string>
+    <integer name="com_vk_sdk_AppId">6674767</integer>
 </resources>

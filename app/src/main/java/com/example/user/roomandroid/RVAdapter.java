@@ -1,5 +1,7 @@
 package com.example.user.roomandroid;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.user.roomandroid.model.Person;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vk.sdk.api.model.VKList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,11 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
 
     public List<Person> persons;
+    //public List<String> vkData;
+
+    /*public RVAdapter(List<Person> persons) {
+        this.persons = persons;
+    }*/
 
     public RVAdapter(List<Person> persons) {
         this.persons = persons;
@@ -40,10 +48,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     @Override
     public void onBindViewHolder(RVAdapter.PersonViewHolder holder, int position) {
         holder.personName.setText(persons.get(position).getName());
-        holder.personAge.setText(persons.get(position).getAge());
-        MainActivity.imageLoader.displayImage(persons.get(position).getPhotoUrl(),holder.personPhoto);
-        //holder.personPhoto.se(persons.get(position).getPhotoUrl());
-        //TODO: install view
+        holder.secondName.setText(persons.get(position).getSecondName());
+        //holder.imageView
     }
 
     @Override
@@ -53,13 +59,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     public class PersonViewHolder extends RecyclerView.ViewHolder {
         TextView personName;
-        TextView personAge;
-        ImageView personPhoto;
+        TextView secondName;
+        ImageView imageView;
+
         public PersonViewHolder(View itemView) {
             super(itemView);
-            personName = (TextView)itemView.findViewById(R.id.person_name);
-            personAge = (TextView)itemView.findViewById(R.id.person_age);
-            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
+            personName = itemView.findViewById(R.id.person_name);
+            secondName = itemView.findViewById(R.id.person_secondName);
+            imageView = itemView.findViewById(R.id.person_photo);
         }
     }
 }

@@ -6,12 +6,12 @@ package com.example.user.roomandroid.model;
 
 public class Person {
     private String name;
-    private String age;
+    private String secondName;
     private String photoUrl;
 
-    public Person(String name, String age, String photoUrl) {
+    public Person(String name, String secondName, String photoUrl) {
         this.name = name;
-        this.age = age;
+        this.secondName = secondName;
         this.photoUrl = photoUrl;
     }
 
@@ -23,12 +23,12 @@ public class Person {
         this.name = name;
     }
 
-    public String getAge() {
-        return age;
+    public String getSecondName() {
+        return secondName;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
     public String getPhotoUrl() {
