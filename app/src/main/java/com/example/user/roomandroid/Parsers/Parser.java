@@ -8,4 +8,9 @@ public class Parser {
     public Parser(){
 
     }
+
+    public static String getStringUrlPhoto(String idPhoto){
+        if(idPhoto!="")return "https://vk.com/andr_1999?z="+idPhoto;
+        else return "";
+    }
 }

@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.example.user.roomandroid.Parsers.Parser;
 import com.example.user.roomandroid.model.Person;
 import com.example.user.roomandroid.model.WallItem;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -163,15 +164,7 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
                 final VKRequest request = VKApi.wall().get(VKParameters.from(
                         VKApiConst.EXTENDED,1,VKApiConst.COUNT,10,VKApiConst.FIELDS,"text"));
                 final VKRequest requestUser = VKApi.users().get(VKParameters.from(VKApiConst.OWNER_ID,161243682));
-                requestUser.executeWithListener(new VKRequest.VKRequestListener() {
-                    @Override
-                    public void onComplete(VKResponse response) {
-                        super.onComplete(response);
-                        Log.i("dadada","ocCompleUser");
-                        VKApiUser user = (VKApiUser) response.parsedModel;
-                        Log.i("dadadada","user_name = "+user.first_name);
-                    }
-                });
+
                 request.executeWithListener(new VKRequest.VKRequestListener() {
                     @Override
                     public void onComplete(VKResponse response) {
@@ -191,16 +184,19 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
                             wallItem.setCountReposts(list.get(i).reposts_count);
                             wallItem.setText(list.get(i).text);
                             wallItem.setName(String.valueOf(list.get(i).from_id));
+                            wallItem.setURLContext(Parser.getStringUrlPhoto(list.get(i).attachments.toAttachmentsString()));
+                            items.add(wallItem);
 
                             Log.i("dadadaItems", "comments = "+String.valueOf(wallItem.getCountComments()));
                             Log.i("dadadaItems", "likes = "+String.valueOf(wallItem.getCountLikes()));
                             Log.i("dadadaItems","reposts = " +String.valueOf(wallItem.getCountReposts()));
                             Log.i("dadadaItems","text = " +String.valueOf(wallItem.getText()));
                             Log.i("dadadaItems","owner_id = " +String.valueOf(wallItem.getName()));
+                            Log.i("dadadaItems","photoUrl = " +String.valueOf(wallItem.getURLContext()));
 
 
                         }
-                        RVAdapter rvAdapter = new RVAdapter(persons);
+                        RVAdapter rvAdapter = new RVAdapter(items);
                         recyclerView.setAdapter(rvAdapter);
                     }
 
