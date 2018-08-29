@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.user.roomandroid.model.Person;
+import com.example.user.roomandroid.model.WallItem;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -39,8 +40,10 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.methods.VKApiFriends;
 import com.vk.sdk.api.methods.VKApiMessages;
+import com.vk.sdk.api.methods.VKApiWall;
 import com.vk.sdk.api.model.VKApiGetMessagesResponse;
 import com.vk.sdk.api.model.VKApiMessage;
+import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
@@ -156,24 +159,47 @@ public class MainActivity extends AppCompatActivity implements ImageLoadingListe
             @Override
             public void onResult(VKAccessToken res) {
             Log.i("dadada","succesful");
-                VKRequest request = VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS,"first_name"));
-                //final VKRequest request = VKApi.messages().get(VKParameters.from(VKApiConst.COUNT,10));
+                //VKRequest request = VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS,"first_name"));
+                final VKRequest request = VKApi.wall().get(VKParameters.from(
+                        VKApiConst.EXTENDED,1,VKApiConst.COUNT,10,VKApiConst.FIELDS,"text"));
+                final VKRequest requestUser = VKApi.users().get(VKParameters.from(VKApiConst.OWNER_ID,161243682));
+                requestUser.executeWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        super.onComplete(response);
+                        Log.i("dadada","ocCompleUser");
+                        VKApiUser user = (VKApiUser) response.parsedModel;
+                        Log.i("dadadada","user_name = "+user.first_name);
+                    }
+                });
                 request.executeWithListener(new VKRequest.VKRequestListener() {
                     @Override
                     public void onComplete(VKResponse response) {
                         Log.i("dadada","complete");
                         super.onComplete(response);
-                        List<VKApiUser> list = (List<VKApiUser>) response.parsedModel;
-                        Log.i("dadada", "norm list");
-
-                        List<Person>persons = new ArrayList<>();
+                        //List<VKApiUser> list = (List<VKApiUser>) response.parsedModel;
+                        List<VKApiPost>list = (List<VKApiPost>) response.parsedModel;
+                        List<WallItem>items = new ArrayList<>();
+                        Log.i("dadada", "norm list"+list.size());
                         for(int i=0;i<list.size();i++){
-                            String name = list.get(i).first_name;
-                            String secondName = list.get(i).last_name;
-                            String url = list.get(i).photo_100;
-                            persons.add(new Person(name,secondName,url));
+                            WallItem wallItem = new WallItem();
+                            wallItem.setName("Andrey");
+                            wallItem.setSurname("Molochko");
+                            wallItem.setURLPhoto("https://pp.userapi.com/c840333/v840333619/6e168/ul2LV7YWrpA.jpg");
+                            wallItem.setCountComments(list.get(i).comments_count);
+                            wallItem.setCountLikes(list.get(i).likes_count);
+                            wallItem.setCountReposts(list.get(i).reposts_count);
+                            wallItem.setText(list.get(i).text);
+                            wallItem.setName(String.valueOf(list.get(i).from_id));
+
+                            Log.i("dadadaItems", "comments = "+String.valueOf(wallItem.getCountComments()));
+                            Log.i("dadadaItems", "likes = "+String.valueOf(wallItem.getCountLikes()));
+                            Log.i("dadadaItems","reposts = " +String.valueOf(wallItem.getCountReposts()));
+                            Log.i("dadadaItems","text = " +String.valueOf(wallItem.getText()));
+                            Log.i("dadadaItems","owner_id = " +String.valueOf(wallItem.getName()));
+
+
                         }
-                        Log.i("dadada", "almost finish");
                         RVAdapter rvAdapter = new RVAdapter(persons);
                         recyclerView.setAdapter(rvAdapter);
                     }

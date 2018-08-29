@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.roomandroid.model.Person;
+import com.example.user.roomandroid.model.WallItem;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.vk.sdk.api.model.VKList;
 
@@ -22,15 +23,10 @@ import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
 
-    public List<Person> persons;
-    //public List<String> vkData;
+    List<WallItem>items = new ArrayList<>();
 
-    /*public RVAdapter(List<Person> persons) {
-        this.persons = persons;
-    }*/
-
-    public RVAdapter(List<Person> persons) {
-        this.persons = persons;
+    public RVAdapter(List<WallItem> items) {
+        this.items = items;
     }
 
     @Override
@@ -47,25 +43,21 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     @Override
     public void onBindViewHolder(RVAdapter.PersonViewHolder holder, int position) {
-        holder.personName.setText(persons.get(position).getName());
-        holder.secondName.setText(persons.get(position).getSecondName());
-        MainActivity.imageLoader.displayImage(persons.get(position).getPhotoUrl(),holder.imageView);
+        //holder.personName.setText(persons.get(position).getName());
+        MainActivity.imageLoader.displayImage(items.get(position).getURLPhoto(),holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return  persons.size();
+        return  items.size();
     }
 
     public class PersonViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
-        TextView personName;
-        TextView secondName;
+
 
         public PersonViewHolder(View itemView) {
             super(itemView);
-            personName = itemView.findViewById(R.id.person_name);
-            secondName = itemView.findViewById(R.id.person_secondName);
             imageView = itemView.findViewById(R.id.person_photo);
         }
     }
